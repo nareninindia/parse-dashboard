@@ -1,8 +1,11 @@
 language: node_js
 node_js:
-- '4.4'
-- '5.7'
-- '6.1'
+- '6.11'
+- '8.8'
+before_script: ./scripts/before_script.sh
+cache:
+  directories:
+    - node_modules
 deploy:
   provider: npm
   on:

@@ -39,6 +39,9 @@ export default class ParseApp {
     serverInfo,
     production,
     iconName,
+    primaryBackgroundColor,
+    secondaryBackgroundColor,
+    supportedPushLocales,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -59,6 +62,13 @@ export default class ParseApp {
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
     this.icon = iconName;
+    this.primaryBackgroundColor=primaryBackgroundColor;
+    this.secondaryBackgroundColor=secondaryBackgroundColor;
+    this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
+
+    if(!supportedPushLocales) {
+      console.warn(`Missing push locales for '` + appName + `', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications`);
+    }
 
     this.settings = {
       fields: {},
@@ -404,13 +414,11 @@ export default class ParseApp {
   }
 
   isLocalizationAvailable() {
-    let path = '/apps/' + this.slug + '/is_localization_available';
-    return AJAX.abortableGet(path);
+    return !!this.serverInfo.features.push.localization;
   }
 
   fetchPushLocales() {
-    let path = '/apps/' + this.slug + '/installation_column_options?column=localeIdentifier';
-    return AJAX.abortableGet(path);
+    return this.supportedPushLocales;
   }
 
   fetchPushLocaleDeviceCount(audienceId, where, locales) {
